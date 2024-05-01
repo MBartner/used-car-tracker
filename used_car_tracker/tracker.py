@@ -1,7 +1,9 @@
 import json
 import logging
+import time
 from hashlib import sha256
 from urllib.parse import unquote_plus, urlencode
+from pathlib import Path
 
 import httpx
 
@@ -28,7 +30,7 @@ def get_token(search_params: dict[str, str], nonce: str) -> str:
     return token
 
 
-def get_results():
+def get_results(log_dir: Path):
     for site in DEDUP_SITES.split("|"):
         params = {
             "make": "subaru",
@@ -61,4 +63,7 @@ def get_results():
         if RESULTS_KEY not in parsed:
             continue
         for result in parsed[RESULTS_KEY]:
-            print(result)
+            file_name = Path(f"result_{time.time_ns()}.json")
+            log_path = log_dir / Path(file_name)
+            with open(log_path, "w", encoding="utf-8") as file:
+                json.dump(result, file)
