@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "used-car-tracker"
+version = "0.0.1"
+requires-python = ">=3.8"
+dependencies = [
+    "httpx"
+]
+
+# install with `pip install .[dev]`
+[project.optional-dependencies]
+dev = [
+    "isort",
+    "black",
+    "mypy",
+    "pytest"
+]
