@@ -30,7 +30,7 @@ def get_token(search_params: dict[str, str], nonce: str) -> str:
     return token
 
 
-def get_results(log_dir: Path):
+def track_cars(log_dir: Path):
     for site in DEDUP_SITES.split("|"):
         params = {
             "make": "subaru",
