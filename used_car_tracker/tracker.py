@@ -2,6 +2,7 @@ import json
 import logging
 import time
 from hashlib import sha256
+from typing import Dict
 from urllib.parse import unquote_plus, urlencode
 from pathlib import Path
 
@@ -19,11 +20,11 @@ def hash_params(search_params: bytes) -> str:
     return m.hexdigest()
 
 
-def stringify_params(search_params: dict[str, str]) -> str:
+def stringify_params(search_params: Dict[str, str]) -> str:
     return unquote_plus(urlencode(search_params))
 
 
-def get_token(search_params: dict[str, str], nonce: str) -> str:
+def get_token(search_params: Dict[str, str], nonce: str) -> str:
     content = stringify_params(search_params)
     content += nonce
     token = hash_params(content.encode("utf-8"))
