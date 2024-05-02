@@ -1,0 +1,10 @@
+[Unit]
+Description="Track cars on the market"
+Wants=car-tracker.timer
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python -m car_tracker
+
+[Install]
+WantedBy=multi-user.target

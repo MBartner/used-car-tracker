@@ -1,0 +1,9 @@
+[Unit]
+Description="Pull car tracker pages every day"
+
+[Timer]
+OnCalendar=daily
+Persitstent=true
+
+[Install]
+WantedBy=timers.target
