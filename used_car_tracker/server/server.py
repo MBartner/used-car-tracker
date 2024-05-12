@@ -6,7 +6,7 @@ import logging
 import os
 from socket import socket
 from socketserver import BaseServer
-from typing import Any, Dict, List, Tuple, Type
+from typing import Any, Dict, List, Optional, Tuple, Type
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +44,7 @@ def requestHandlerFactory(site_dir: str, data_dir: str) -> Type[SimpleHTTPReques
             client_address: Any,
             server: BaseServer,
             *,
-            directory: str | None = None,
+            directory: Optional[str] = None,
         ) -> None:
             super().__init__(request, client_address, server, directory=site_dir)
 
