@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.js" integrity="sha512-7DgGWBKHddtgZ9Cgu8aGfJXvgcVv4SWSESomRtghob4k4orCBUTSRQ4s5SaC2Rz+OptMqNk0aHHsaUBk6fzIXw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+    <script src="./chart.js"></script>
+    <script>
+        async function getCars() {
+            textArea = document.getElementById("output")
+            const resp = await fetch("/api/data")
+            const j = await resp.json()
+            textArea.value = JSON.stringify(j)
+            return j
+        }
+    </script>
+</head>
+
+<body>
+    <button onClick="getCars()">
+        Get Data!
+    </button>
+    <textarea id="output">
+
+    </textarea>
+
+    <div style="width: 800px;">
+        <canvas id="acquisitions"></canvas>
+    </div>
+
+    <script async type="module">
+        (async function () {
+            const cars = await getCars()
+            const locationToLink = {}
+
+            const datasets = []
+            for (const id in cars) {
+                const carEntries = cars[id]
+                const data = []
+                for (const entry of carEntries) {
+                    data.push({
+                        x: entry["date"].toString(),
+                        y: entry["car"]["price"].replace("$", "").replace(",", "")
+                    })
+                }
+                const car_location = carEntries[0]["car"]["location"]
+                datasets.push({
+                    label: car_location,
+                    data: data
+                })
+                locationToLink[car_location] = carEntries[0]["car"]["url"]
+            }
+            console.log(datasets)
+            function linkToCar(event, legendItem, legend) {
+                const url = locationToLink[legendItem.text]
+                console.log(url)
+                window.open(url, '_blank').focus();
+            }
+            new Chart(
+                document.getElementById('acquisitions'),
+                {
+                    type: 'line',
+                    options: {
+                        plugins: {
+                            legend: {
+                                onClick: linkToCar
+                            }
+                        }
+                    },
+                    data: {
+                        datasets: datasets
+                    }
+                }
+            );
+        })();
+    </script>
+
+</body>
+
+</html>
