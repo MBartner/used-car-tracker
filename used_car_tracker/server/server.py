@@ -6,16 +6,16 @@ import logging
 import os
 from socket import socket
 from socketserver import BaseServer
-from typing import Any
+from typing import Any, Dict, List, Tuple, Type
 
 logger = logging.getLogger(__name__)
 
 ID_KEY = "id"
 
 
-def get_cars(dir: str) -> dict[str, list[dict[str, Any]]]:
+def get_cars(dir: str) -> Dict[str, List[Dict[str, Any]]]:
 
-    cars = dict[str, list[dict[str, Any]]]()
+    cars: Dict[str, List[Dict[str, Any]]] = {}
 
     # iterate over directories
     for file_path in os.listdir(dir):
@@ -30,16 +30,17 @@ def get_cars(dir: str) -> dict[str, list[dict[str, Any]]]:
             continue
         id = car[ID_KEY]
         if id not in cars:
-            cars[id] = list[dict[str, Any]]()
+            new_car_list: List[Dict[str, Any]] = []
+            cars[id] = new_car_list
         cars[id].append({"date": formatted_created, "car": car})
     return cars
 
 
-def requestHandlerFactory(site_dir: str, data_dir: str) -> type[SimpleHTTPRequestHandler]:
+def requestHandlerFactory(site_dir: str, data_dir: str) -> Type[SimpleHTTPRequestHandler]:
     class DirectoryHTTPRequestHandler(SimpleHTTPRequestHandler):
         def __init__(
             self,
-            request: socket | tuple[bytes, socket],
+            request: socket | Tuple[bytes, socket],
             client_address: Any,
             server: BaseServer,
             *,

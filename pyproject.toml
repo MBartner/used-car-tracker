@@ -5,7 +5,8 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "used-car-tracker"
 version = "0.0.1"
-requires-python = ">=3.9"
+# DO NOT UPGRADE! PI CANT RUN 3.9
+requires-python = ">=3.7"
 dependencies = [
     "httpx"
 ]
