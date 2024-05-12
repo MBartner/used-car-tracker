@@ -1,12 +1,12 @@
-from datetime import datetime
-from http import HTTPStatus
-from http.server import HTTPServer, SimpleHTTPRequestHandler
 import json
 import logging
 import os
+from datetime import datetime
+from http import HTTPStatus
+from http.server import HTTPServer, SimpleHTTPRequestHandler
 from socket import socket
 from socketserver import BaseServer
-from typing import Any, Dict, List, Optional, Tuple, Type
+from typing import Any, Dict, List, Optional, Tuple, Type, Union
 
 logger = logging.getLogger(__name__)
 
@@ -19,11 +19,11 @@ def get_cars(dir: str) -> Dict[str, List[Dict[str, Any]]]:
 
     # iterate over directories
     for file_path in os.listdir(dir):
-        full_path = dir + "/" +  file_path
+        full_path = dir + "/" + file_path
         file_stat = os.stat(full_path)
-        created_at = file_stat.st_birthtime
+        created_at = file_stat.st_ctime
         created = datetime.fromtimestamp(created_at)
-        formatted_created = created.strftime('%B-%d')
+        formatted_created = created.strftime("%B-%d")
         with open(full_path, "r", encoding="utf-8") as f:
             car = json.load(f)
         if ID_KEY not in car:
@@ -32,7 +32,11 @@ def get_cars(dir: str) -> Dict[str, List[Dict[str, Any]]]:
         if id not in cars:
             new_car_list: List[Dict[str, Any]] = []
             cars[id] = new_car_list
-        cars[id].append({"date": formatted_created, "car": car})
+        cars[id].append({"date": formatted_created, "car": car, "date_int": created_at})
+    
+    for k,v in cars.items():
+        cars[k] = sorted(v, key=lambda x: x["date_int"])
+        
     return cars
 
 
@@ -40,7 +44,7 @@ def requestHandlerFactory(site_dir: str, data_dir: str) -> Type[SimpleHTTPReques
     class DirectoryHTTPRequestHandler(SimpleHTTPRequestHandler):
         def __init__(
             self,
-            request: socket | Tuple[bytes, socket],
+            request: Union[socket, Tuple[bytes, socket]],
             client_address: Any,
             server: BaseServer,
             *,
