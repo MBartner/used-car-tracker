@@ -24,7 +24,7 @@ def get_cars(dir: str) -> Dict[str, List[Dict[str, Any]]]:
     for file_path in os.listdir(dir):
         full_path = dir + "/" + file_path
         file_stat = os.stat(full_path)
-        created_at = file_stat.st_birthtime
+        created_at = file_stat.st_ctime
         created = datetime.fromtimestamp(created_at)
         formatted_created = created.strftime(MONTH_DAY_FMT)
         with open(full_path, "r", encoding="utf-8") as f:
