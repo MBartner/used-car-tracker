@@ -11,6 +11,7 @@ import httpx
 
 DEDUP_SITES = "te|cm|cs|cv|eb|tc|ot|fbm|st"
 RESULTS_KEY = "results"
+TRACKER_TIMESTAMP_KEY = "trackerTimestamp"
 
 logger = logging.getLogger()
 
@@ -65,7 +66,7 @@ def track_cars(log_dir: Path):
         if RESULTS_KEY not in parsed:
             continue
         for result in parsed[RESULTS_KEY]:
-            result["trackerTimestamp"] = datetime.now().timestamp()
+            result[TRACKER_TIMESTAMP_KEY] = datetime.now().timestamp()
             file_name = Path(f"result_{time.time_ns()}.json")
             log_path = log_dir / Path(file_name)
             with open(log_path, "w", encoding="utf-8") as file:

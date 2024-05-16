@@ -8,9 +8,12 @@ from socket import socket
 from socketserver import BaseServer
 from typing import Any, Dict, List, Optional, Tuple, Type, Union
 
+from used_car_tracker.tracker import TRACKER_TIMESTAMP_KEY
+
 logger = logging.getLogger(__name__)
 
 ID_KEY = "id"
+MONTH_DAY_FMT = "%B-%d"
 
 
 def get_cars(dir: str) -> Dict[str, List[Dict[str, Any]]]:
@@ -21,9 +24,9 @@ def get_cars(dir: str) -> Dict[str, List[Dict[str, Any]]]:
     for file_path in os.listdir(dir):
         full_path = dir + "/" + file_path
         file_stat = os.stat(full_path)
-        created_at = file_stat.st_ctime
+        created_at = file_stat.st_birthtime
         created = datetime.fromtimestamp(created_at)
-        formatted_created = created.strftime("%B-%d")
+        formatted_created = created.strftime(MONTH_DAY_FMT)
         with open(full_path, "r", encoding="utf-8") as f:
             car = json.load(f)
         if ID_KEY not in car:
@@ -32,7 +35,13 @@ def get_cars(dir: str) -> Dict[str, List[Dict[str, Any]]]:
         if id not in cars:
             new_car_list: List[Dict[str, Any]] = []
             cars[id] = new_car_list
+        if TRACKER_TIMESTAMP_KEY in car:
+            tracker_timestamp_flt = car[TRACKER_TIMESTAMP_KEY]
+            tracker_timestamp = datetime.fromtimestamp(tracker_timestamp_flt)
+            created_at = tracker_timestamp_flt
+            formatted_created = tracker_timestamp.strftime(MONTH_DAY_FMT)
         cars[id].append({"date": formatted_created, "car": car, "date_int": created_at})
+
     
     for k,v in cars.items():
         cars[k] = sorted(v, key=lambda x: x["date_int"])
