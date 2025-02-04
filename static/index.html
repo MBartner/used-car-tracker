@@ -32,7 +32,8 @@
                 for (const entry of carEntries) {
                     data.push({
                         x: entry["date"].toString(),
-                        y: entry["car"]["price"].replace("$", "").replace(",", "")
+                        y: entry["car"]["price"].replace("$", "").replace(",", ""),
+                        dateInt: entry["date_int"],
                     })
                 }
                 const car_location = carEntries[0]["car"]["location"]
@@ -48,6 +49,11 @@
                 console.log(url)
                 window.open(url, '_blank').focus();
             }
+
+            datasets.sort((a, b) => {
+                return a['data'][0]["dateInt"] - b['data'][0]["dateInt"]
+            })
+
             new Chart(
                 document.getElementById('acquisitions'),
                 {
