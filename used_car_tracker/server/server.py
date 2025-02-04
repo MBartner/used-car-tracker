@@ -42,10 +42,9 @@ def get_cars(dir: str) -> Dict[str, List[Dict[str, Any]]]:
             formatted_created = tracker_timestamp.strftime(MONTH_DAY_YEAR_FMT)
         cars[id].append({"date": formatted_created, "car": car, "date_int": created_at})
 
-    
-    for k,v in cars.items():
+    for k, v in cars.items():
         cars[k] = sorted(v, key=lambda x: x["date_int"])
-        
+
     return cars
 
 
