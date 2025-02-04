@@ -13,7 +13,7 @@ from used_car_tracker.tracker import TRACKER_TIMESTAMP_KEY
 logger = logging.getLogger(__name__)
 
 ID_KEY = "id"
-MONTH_DAY_FMT = "%B-%d"
+MONTH_DAY_YEAR_FMT = "%B-%d, %Y"
 
 
 def get_cars(dir: str) -> Dict[str, List[Dict[str, Any]]]:
@@ -26,7 +26,7 @@ def get_cars(dir: str) -> Dict[str, List[Dict[str, Any]]]:
         file_stat = os.stat(full_path)
         created_at = file_stat.st_ctime
         created = datetime.fromtimestamp(created_at)
-        formatted_created = created.strftime(MONTH_DAY_FMT)
+        formatted_created = created.strftime(MONTH_DAY_YEAR_FMT)
         with open(full_path, "r", encoding="utf-8") as f:
             car = json.load(f)
         if ID_KEY not in car:
@@ -39,7 +39,7 @@ def get_cars(dir: str) -> Dict[str, List[Dict[str, Any]]]:
             tracker_timestamp_flt = car[TRACKER_TIMESTAMP_KEY]
             tracker_timestamp = datetime.fromtimestamp(tracker_timestamp_flt)
             created_at = tracker_timestamp_flt
-            formatted_created = tracker_timestamp.strftime(MONTH_DAY_FMT)
+            formatted_created = tracker_timestamp.strftime(MONTH_DAY_YEAR_FMT)
         cars[id].append({"date": formatted_created, "car": car, "date_int": created_at})
 
     
